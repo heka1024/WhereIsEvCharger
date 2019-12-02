@@ -1,6 +1,7 @@
 package example
 
 import example.RichURL._
+import example.Charger._
 
 // use xml
 object EvCharger extends App {
@@ -14,11 +15,9 @@ object EvCharger extends App {
     "http://open.ev.or.kr:8080/openapi/services/rest/EvChargerService" 
      addKey serviceKey
   ).openConnection
-  val ret = con.getResponseCode match {
-    case 200 => Some(xml.XML.load(con.getInputStream) \\ "item")
-    case _ => None
-  }
-  println(ret)
+  val cs = (xml.XML.load(con.getInputStream) \\ "item").map(_.toCharger)
+  val daegu = cs filter (_.address contains "대구")
+  daegu.foreach(println)
 }
 
 object AirKorea {
